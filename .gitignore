@@ -39,3 +39,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local tournament state (dev storage)
+.tournament-state.json
+
+# Playwright
+/test-results/
+/playwright-report/
+/playwright/.cache/
+
+# Screenshots de validación local
+/improvements/

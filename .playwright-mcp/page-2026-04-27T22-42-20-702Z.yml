@@ -1,0 +1,53 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "Sirius Sirius Padel" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img "Sirius" [ref=e5]
+        - generic [ref=e6]: Sirius Padel
+      - navigation [ref=e7]:
+        - link "Inicio" [ref=e8] [cursor=pointer]:
+          - /url: /
+        - link "Sorteo" [ref=e9] [cursor=pointer]:
+          - /url: /sorteo
+        - link "Bracket" [ref=e10] [cursor=pointer]:
+          - /url: /bracket
+        - link "Cronograma" [ref=e11] [cursor=pointer]:
+          - /url: /cronograma
+        - link "Admin" [ref=e12] [cursor=pointer]:
+          - /url: /admin
+  - main [ref=e13]:
+    - generic [ref=e14]: Sirius Software
+    - heading "SIRIUS PADEL TOURNAMENT" [level=1] [ref=e16]:
+      - text: SIRIUS PADEL
+      - text: TOURNAMENT
+    - paragraph [ref=e17]: The winning team will take home 2026 World Cup merch
+    - generic [ref=e18]:
+      - paragraph [ref=e19]: Miércoles 6 de mayo · 18:30 hs
+      - paragraph [ref=e20]: Pilar Padel Center
+    - generic [ref=e21]:
+      - generic [ref=e22]:
+        - generic [ref=e23]: "08"
+        - generic [ref=e24]: días
+      - generic [ref=e25]: ·
+      - generic [ref=e26]:
+        - generic [ref=e27]: "22"
+        - generic [ref=e28]: hs
+      - generic [ref=e29]: ·
+      - generic [ref=e30]:
+        - generic [ref=e31]: "47"
+        - generic [ref=e32]: min
+      - generic [ref=e33]: ·
+      - generic [ref=e34]:
+        - generic [ref=e35]: "39"
+        - generic [ref=e36]: seg
+    - generic [ref=e37]:
+      - link "Ver sorteo" [ref=e38] [cursor=pointer]:
+        - /url: /sorteo
+      - link "Bracket" [ref=e39] [cursor=pointer]:
+        - /url: /bracket
+      - link "Cronograma" [ref=e40] [cursor=pointer]:
+        - /url: /cronograma
+  - button "Open Next.js Dev Tools" [ref=e46] [cursor=pointer]:
+    - img [ref=e47]
+  - alert [ref=e50]

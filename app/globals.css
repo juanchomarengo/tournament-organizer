@@ -1,26 +1,106 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* Sirius Padel — paleta oficial extraída de sirius.com.ar */
+  /* Background gradient oficial: linear-gradient(#081924, #0E2839) */
+  --color-navy-950: #050d1a;
+  --color-navy-900: #081924;
+  --color-navy-800: #0e2839;
+  --color-navy-700: #15384e;
+  --color-navy-600: #1f4d6a;
+  --color-navy-500: #2a6489;
+
+  /* Cyan oficial Sirius: #00DEDA */
+  --color-cyan-bright: #00deda;
+  --color-cyan-glow: #45ffea;
+  --color-mint: #96ecab;
+  --color-cream: #fcf0ad;
+
+  /* Acentos del logo oficial: amarillo, naranja, rojo, verde teal */
+  --color-sirius-yellow: #f6de5c;
+  --color-sirius-yellow-soft: #fff488;
+  --color-sirius-orange: #f05e3e;
+  --color-sirius-red: #af1915;
+  --color-sirius-teal: #15847f;
+
+  --color-sirius-pink: #ff5b8a;
+  --color-sirius-violet: #8b5cf6;
+
+  --color-background: var(--color-navy-900);
+  --color-foreground: #ffffff;
+  --color-muted: rgba(255, 255, 255, 0.65);
+  --color-subtle: rgba(255, 255, 255, 0.45);
+  --color-border: rgba(0, 222, 218, 0.18);
+
+  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-russo-one), var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+  --font-ui: var(--font-inter), var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  html,
+  body {
+    color: var(--color-foreground);
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  body {
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0, 222, 218, 0.18), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 90% 100%, rgba(150, 236, 171, 0.08), transparent 60%),
+      linear-gradient(180deg, var(--color-navy-900) 0%, var(--color-navy-800) 100%);
+    background-attachment: fixed;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background: var(--color-cyan-bright);
+    color: var(--color-navy-900);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  .glow-cyan {
+    box-shadow:
+      0 0 24px rgba(0, 222, 218, 0.4),
+      0 0 56px rgba(0, 222, 218, 0.2);
+  }
+  .glow-text {
+    text-shadow:
+      0 0 20px rgba(0, 222, 218, 0.55),
+      0 0 40px rgba(0, 222, 218, 0.25);
+  }
+  .hairline {
+    border: 1px solid var(--color-border);
+  }
+  .glass {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.04) 0%,
+      rgba(255, 255, 255, 0.015) 100%
+    );
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--color-border);
+  }
+  .text-display {
+    font-family: var(--font-display);
+    letter-spacing: 0.01em;
+  }
+  .text-brand-gradient {
+    background: linear-gradient(90deg, #00deda 0%, #96ecab 50%, #fcf0ad 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .stars-bg {
+    background-image:
+      radial-gradient(1px 1px at 20% 30%, rgba(0, 222, 218, 0.5), transparent 50%),
+      radial-gradient(1px 1px at 80% 60%, rgba(150, 236, 171, 0.4), transparent 50%),
+      radial-gradient(1px 1px at 50% 80%, rgba(252, 240, 173, 0.4), transparent 50%),
+      radial-gradient(1px 1px at 35% 15%, rgba(255, 255, 255, 0.3), transparent 50%),
+      radial-gradient(1px 1px at 70% 40%, rgba(0, 222, 218, 0.3), transparent 50%);
+    background-size: 700px 700px, 600px 600px, 500px 500px, 400px 400px, 800px 800px;
+  }
 }

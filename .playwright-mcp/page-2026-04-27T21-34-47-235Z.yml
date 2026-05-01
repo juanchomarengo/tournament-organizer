@@ -1,0 +1,169 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "Sirius Sirius Padel" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img "Sirius" [ref=e5]
+        - generic [ref=e11]: Sirius Padel
+      - navigation [ref=e12]:
+        - link "Inicio" [ref=e13] [cursor=pointer]:
+          - /url: /
+        - link "Sorteo" [ref=e14] [cursor=pointer]:
+          - /url: /sorteo
+        - link "Bracket" [ref=e15] [cursor=pointer]:
+          - /url: /bracket
+        - link "Cronograma" [ref=e16] [cursor=pointer]:
+          - /url: /cronograma
+        - link "Admin" [ref=e17] [cursor=pointer]:
+          - /url: /admin
+  - generic [ref=e18]:
+    - generic [ref=e19]:
+      - generic [ref=e20]:
+        - paragraph [ref=e21]: Backoffice
+        - generic [ref=e22]:
+          - heading "Panel del torneo" [level=1] [ref=e23]
+          - generic [ref=e24]: Setup
+      - button "Salir" [ref=e26]
+    - generic [ref=e27]:
+      - generic [ref=e28]:
+        - generic [ref=e29]:
+          - generic [ref=e30]:
+            - heading "Jugadores" [level=2] [ref=e31]
+            - paragraph [ref=e32]: Para sortear parejas balanceadas, deben ser número par y misma cantidad de cada nivel.
+          - generic [ref=e33]:
+            - generic [ref=e34]: 21 en total (impar)
+            - generic [ref=e35]: Int 11 · Prin 10
+        - generic [ref=e36]:
+          - textbox "Nombre" [ref=e37]
+          - combobox [ref=e38]:
+            - option "Intermedio" [selected]
+            - option "Principiante"
+          - button "Agregar" [disabled] [ref=e39]
+        - generic [ref=e40]:
+          - button "Cargar lista inicial (21)" [ref=e41]
+          - button "Borrar todos" [ref=e67]
+        - list [ref=e68]:
+          - listitem [ref=e69]:
+            - generic [ref=e72]: Carola
+            - generic [ref=e73]:
+              - button "Int" [ref=e74]
+              - button "×" [ref=e75]
+          - listitem [ref=e76]:
+            - generic [ref=e79]: Juancho
+            - generic [ref=e80]:
+              - button "Int" [ref=e81]
+              - button "×" [ref=e82]
+          - listitem [ref=e83]:
+            - generic [ref=e86]: Nesti
+            - generic [ref=e87]:
+              - button "Int" [ref=e88]
+              - button "×" [ref=e89]
+          - listitem [ref=e90]:
+            - generic [ref=e93]: Santi Grimoldi
+            - generic [ref=e94]:
+              - button "Int" [ref=e95]
+              - button "×" [ref=e96]
+          - listitem [ref=e97]:
+            - generic [ref=e100]: Chulo
+            - generic [ref=e101]:
+              - button "Int" [ref=e102]
+              - button "×" [ref=e103]
+          - listitem [ref=e104]:
+            - generic [ref=e107]: Maxi Geist
+            - generic [ref=e108]:
+              - button "Int" [ref=e109]
+              - button "×" [ref=e110]
+          - listitem [ref=e111]:
+            - generic [ref=e114]: Fede Bustos
+            - generic [ref=e115]:
+              - button "Int" [ref=e116]
+              - button "×" [ref=e117]
+          - listitem [ref=e118]:
+            - generic [ref=e121]: Sofi Tartara
+            - generic [ref=e122]:
+              - button "Int" [ref=e123]
+              - button "×" [ref=e124]
+          - listitem [ref=e125]:
+            - generic [ref=e128]: Emi López
+            - generic [ref=e129]:
+              - button "Int" [ref=e130]
+              - button "×" [ref=e131]
+          - listitem [ref=e132]:
+            - generic [ref=e135]: Nacho
+            - generic [ref=e136]:
+              - button "Int" [ref=e137]
+              - button "×" [ref=e138]
+          - listitem [ref=e139]:
+            - generic [ref=e142]: Agus Vilchez
+            - generic [ref=e143]:
+              - button "Int" [ref=e144]
+              - button "×" [ref=e145]
+          - listitem [ref=e146]:
+            - generic [ref=e149]: Agustín
+            - generic [ref=e150]:
+              - button "Prin" [ref=e151]
+              - button "×" [ref=e152]
+          - listitem [ref=e153]:
+            - generic [ref=e156]: Lucas Barbeito
+            - generic [ref=e157]:
+              - button "Prin" [ref=e158]
+              - button "×" [ref=e159]
+          - listitem [ref=e160]:
+            - generic [ref=e163]: Santino Montevidoni
+            - generic [ref=e164]:
+              - button "Prin" [ref=e165]
+              - button "×" [ref=e166]
+          - listitem [ref=e167]:
+            - generic [ref=e170]: Clari
+            - generic [ref=e171]:
+              - button "Prin" [ref=e172]
+              - button "×" [ref=e173]
+          - listitem [ref=e174]:
+            - generic [ref=e177]: Marcos Lund
+            - generic [ref=e178]:
+              - button "Prin" [ref=e179]
+              - button "×" [ref=e180]
+          - listitem [ref=e181]:
+            - generic [ref=e184]: Santi Aguilar
+            - generic [ref=e185]:
+              - button "Prin" [ref=e186]
+              - button "×" [ref=e187]
+          - listitem [ref=e188]:
+            - generic [ref=e191]: Martín Barreiro
+            - generic [ref=e192]:
+              - button "Prin" [ref=e193]
+              - button "×" [ref=e194]
+          - listitem [ref=e195]:
+            - generic [ref=e198]: Don Pablo
+            - generic [ref=e199]:
+              - button "Prin" [ref=e200]
+              - button "×" [ref=e201]
+          - listitem [ref=e202]:
+            - generic [ref=e205]: Santi Pérez
+            - generic [ref=e206]:
+              - button "Prin" [ref=e207]
+              - button "×" [ref=e208]
+          - listitem [ref=e209]:
+            - generic [ref=e212]: Gonza Oxoby
+            - generic [ref=e213]:
+              - button "Prin" [ref=e214]
+              - button "×" [ref=e215]
+      - generic [ref=e42]:
+        - heading "Sorteo de parejas" [level=2] [ref=e43]
+        - paragraph [ref=e44]: Cada pareja se forma con 1 Intermedio + 1 Principiante.
+        - generic [ref=e45]:
+          - button "Sortear parejas" [disabled] [ref=e46]
+          - link "Abrir pantalla de show ↗" [ref=e47] [cursor=pointer]:
+            - /url: /sorteo
+        - paragraph [ref=e48]: Asegurate de tener misma cantidad de Intermedios y Principiantes y un mínimo de 4 jugadores.
+      - generic [ref=e49]:
+        - heading "Backup y export" [level=2] [ref=e50]
+        - paragraph [ref=e51]: Antes de cada fase importante, descargá un snapshot. Si algo sale mal, el Excel sirve para seguir el torneo a mano.
+        - generic [ref=e52]:
+          - button "Exportar Excel" [ref=e53]
+          - button "Exportar JSON" [ref=e54]
+          - button "Importar JSON" [ref=e55]
+          - button "Reset total" [ref=e56]
+  - button "Open Next.js Dev Tools" [ref=e62] [cursor=pointer]:
+    - img [ref=e63]
+  - alert [ref=e66]

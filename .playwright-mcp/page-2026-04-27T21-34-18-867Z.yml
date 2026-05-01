@@ -1,0 +1,61 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "Sirius Sirius Padel" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img "Sirius" [ref=e5]
+        - generic [ref=e11]: Sirius Padel
+      - navigation [ref=e12]:
+        - link "Inicio" [ref=e13] [cursor=pointer]:
+          - /url: /
+        - link "Sorteo" [ref=e14] [cursor=pointer]:
+          - /url: /sorteo
+        - link "Bracket" [ref=e15] [cursor=pointer]:
+          - /url: /bracket
+        - link "Cronograma" [ref=e16] [cursor=pointer]:
+          - /url: /cronograma
+        - link "Admin" [ref=e17] [cursor=pointer]:
+          - /url: /admin
+  - generic [ref=e18]:
+    - generic [ref=e19]:
+      - generic [ref=e20]:
+        - paragraph [ref=e21]: Backoffice
+        - generic [ref=e22]:
+          - heading "Panel del torneo" [level=1] [ref=e23]
+          - generic [ref=e24]: Setup
+      - button "Salir" [ref=e26]
+    - generic [ref=e27]:
+      - generic [ref=e28]:
+        - generic [ref=e29]:
+          - generic [ref=e30]:
+            - heading "Jugadores" [level=2] [ref=e31]
+            - paragraph [ref=e32]: Para sortear parejas balanceadas, deben ser número par y misma cantidad de cada nivel.
+          - generic [ref=e33]:
+            - generic [ref=e34]: 0 en total (impar)
+            - generic [ref=e35]: Int 0 · Prin 0
+        - generic [ref=e36]:
+          - textbox "Nombre" [ref=e37]
+          - combobox [ref=e38]:
+            - option "Intermedio" [selected]
+            - option "Principiante"
+          - button "Agregar" [disabled] [ref=e39]
+        - button "Cargar lista inicial (21)" [ref=e41]
+      - generic [ref=e42]:
+        - heading "Sorteo de parejas" [level=2] [ref=e43]
+        - paragraph [ref=e44]: Cada pareja se forma con 1 Intermedio + 1 Principiante.
+        - generic [ref=e45]:
+          - button "Sortear parejas" [disabled] [ref=e46]
+          - link "Abrir pantalla de show ↗" [ref=e47] [cursor=pointer]:
+            - /url: /sorteo
+        - paragraph [ref=e48]: Asegurate de tener misma cantidad de Intermedios y Principiantes y un mínimo de 4 jugadores.
+      - generic [ref=e49]:
+        - heading "Backup y export" [level=2] [ref=e50]
+        - paragraph [ref=e51]: Antes de cada fase importante, descargá un snapshot. Si algo sale mal, el Excel sirve para seguir el torneo a mano.
+        - generic [ref=e52]:
+          - button "Exportar Excel" [ref=e53]
+          - button "Exportar JSON" [ref=e54]
+          - button "Importar JSON" [ref=e55]
+          - button "Reset total" [ref=e56]
+  - button "Open Next.js Dev Tools" [ref=e62] [cursor=pointer]:
+    - img [ref=e63]
+  - alert [ref=e66]

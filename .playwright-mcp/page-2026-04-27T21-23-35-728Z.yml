@@ -1,0 +1,28 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "Sirius Sirius Padel" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img "Sirius" [ref=e5]
+        - generic [ref=e11]: Sirius Padel
+      - navigation [ref=e12]:
+        - link "Inicio" [ref=e13] [cursor=pointer]:
+          - /url: /
+        - link "Sorteo" [ref=e14] [cursor=pointer]:
+          - /url: /sorteo
+        - link "Bracket" [ref=e15] [cursor=pointer]:
+          - /url: /bracket
+        - link "Cronograma" [ref=e16] [cursor=pointer]:
+          - /url: /cronograma
+        - link "Admin" [ref=e17] [cursor=pointer]:
+          - /url: /admin
+  - button "Open Next.js Dev Tools" [ref=e23] [cursor=pointer]:
+    - img [ref=e24]
+  - alert [ref=e27]
+  - main [ref=e28]:
+    - paragraph [ref=e29]: Sirius Padel Tournament
+    - heading "12 parejas listas" [level=1] [ref=e30]
+    - paragraph [ref=e31]: Apretá iniciar y proyectá la pantalla. Las parejas se revelan una por una.
+    - generic [ref=e32]:
+      - button "Iniciar reveal" [ref=e33]
+      - button "Ver todas" [ref=e34]

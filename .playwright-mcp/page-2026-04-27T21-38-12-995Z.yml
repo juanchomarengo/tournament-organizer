@@ -1,0 +1,100 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "Sirius Sirius Padel" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img "Sirius" [ref=e5]
+        - generic [ref=e11]: Sirius Padel
+      - navigation [ref=e12]:
+        - link "Inicio" [ref=e13] [cursor=pointer]:
+          - /url: /
+        - link "Sorteo" [ref=e14] [cursor=pointer]:
+          - /url: /sorteo
+        - link "Bracket" [ref=e15] [cursor=pointer]:
+          - /url: /bracket
+        - link "Cronograma" [ref=e16] [cursor=pointer]:
+          - /url: /cronograma
+        - link "Admin" [ref=e17] [cursor=pointer]:
+          - /url: /admin
+  - button "Open Next.js Dev Tools" [ref=e23] [cursor=pointer]:
+    - img [ref=e24]
+  - alert [ref=e27]
+  - main [ref=e28]:
+    - paragraph [ref=e29]: Sorteo de parejas
+    - heading "Sirius Padel Tournament" [level=1] [ref=e30]
+    - generic [ref=e31]:
+      - generic [ref=e33]:
+        - generic [ref=e34]: Pareja 1
+        - generic [ref=e94]:
+          - generic [ref=e97]: Fede Bustos
+          - generic [ref=e100]: Lucas Barbeito
+          - generic [ref=e101]: Grupo D
+      - generic [ref=e38]:
+        - generic [ref=e39]: Pareja 2
+        - generic [ref=e102]:
+          - generic [ref=e105]: Invitado A
+          - generic [ref=e108]: Marcos Lund
+          - generic [ref=e109]: Grupo C
+      - generic [ref=e43]:
+        - generic [ref=e44]: Pareja 3
+        - generic [ref=e110]:
+          - generic [ref=e113]: Emi López
+          - generic [ref=e116]: Gonza Oxoby
+          - generic [ref=e117]: Grupo A
+      - generic [ref=e48]:
+        - generic [ref=e49]: Pareja 4
+        - generic [ref=e118]:
+          - generic [ref=e121]: Nesti
+          - generic [ref=e124]: Don Pablo
+          - generic [ref=e125]: Grupo A
+      - generic [ref=e53]:
+        - generic [ref=e54]: Pareja 5
+        - generic [ref=e126]:
+          - generic [ref=e129]: Santi Grimoldi
+          - generic [ref=e132]: Santino Montevidoni
+          - generic [ref=e133]: Grupo C
+      - generic [ref=e58]:
+        - generic [ref=e59]: Pareja 6
+        - generic [ref=e134]:
+          - generic [ref=e137]: Carola
+          - generic [ref=e140]: Agustín
+          - generic [ref=e141]: Grupo C
+      - generic [ref=e63]:
+        - generic [ref=e64]: Pareja 7
+        - generic [ref=e142]:
+          - generic [ref=e145]: Maxi Geist
+          - generic [ref=e148]: Martín Barreiro
+          - generic [ref=e149]: Grupo B
+      - generic [ref=e68]:
+        - generic [ref=e69]: Pareja 8
+        - generic [ref=e150]:
+          - generic [ref=e153]: Sofi Tartara
+          - generic [ref=e156]: Santi Pérez
+          - generic [ref=e157]: Grupo D
+      - generic [ref=e73]:
+        - generic [ref=e74]: Pareja 9
+        - generic [ref=e158]:
+          - generic [ref=e161]: Agus Vilchez
+          - generic [ref=e164]: Santi Aguilar
+          - generic [ref=e165]: Grupo D
+      - generic [ref=e78]:
+        - generic [ref=e79]: Pareja 10
+        - generic [ref=e166]:
+          - generic [ref=e169]: Juancho
+          - generic [ref=e172]: Invitada B
+          - generic [ref=e173]: Grupo B
+      - generic [ref=e83]:
+        - generic [ref=e84]: Pareja 11
+        - generic [ref=e174]:
+          - generic [ref=e177]: Nacho
+          - generic [ref=e180]: Invitado C
+          - generic [ref=e181]: Grupo A
+      - generic [ref=e88]:
+        - generic [ref=e89]: Pareja 12
+        - generic [ref=e182]:
+          - generic [ref=e185]: Chulo
+          - generic [ref=e188]: Clari
+          - generic [ref=e189]: Grupo B
+    - generic [ref=e92]:
+      - button "Volver a empezar" [ref=e190]
+      - button "Reproducir de nuevo" [ref=e191]
