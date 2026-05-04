@@ -5,11 +5,10 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useTournament } from "@/lib/client";
 import { Card } from "@/components/ui";
+import { PlayerAvatar } from "@/components/PlayerAvatar";
 
-const EVENT_TS = new Date("2026-05-06T18:30:00-03:00").getTime();
-
-function diff(now: number) {
-  const ms = Math.max(0, EVENT_TS - now);
+function diff(eventTs: number, now: number) {
+  const ms = Math.max(0, eventTs - now);
   const days = Math.floor(ms / (1000 * 60 * 60 * 24));
   const hours = Math.floor((ms / (1000 * 60 * 60)) % 24);
   const minutes = Math.floor((ms / (1000 * 60)) % 60);
@@ -17,8 +16,33 @@ function diff(now: number) {
   return { days, hours, minutes, seconds, done: ms === 0 };
 }
 
+function formatEventDate(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  const days = ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"];
+  const months = [
+    "enero",
+    "febrero",
+    "marzo",
+    "abril",
+    "mayo",
+    "junio",
+    "julio",
+    "agosto",
+    "septiembre",
+    "octubre",
+    "noviembre",
+    "diciembre",
+  ];
+  const dayName = days[d.getDay()];
+  const month = months[d.getMonth()];
+  const time = `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+  return `${dayName.charAt(0).toUpperCase() + dayName.slice(1)} ${d.getDate()} de ${month} · ${time} hs`;
+}
+
 export function HomeView() {
   const { tournament } = useTournament(10000);
+  const eventTs = new Date(tournament.config.eventStart).getTime();
   const [now, setNow] = useState<number | null>(null);
 
   useEffect(() => {
@@ -62,7 +86,7 @@ export function HomeView() {
         transition={{ duration: 0.5, delay: 0.2 }}
         className="mt-8 max-w-md text-center text-cyan-bright text-sm uppercase tracking-[0.2em]"
       >
-        The winning team will take home 2026 World Cup merch
+        The winning team will take home {tournament.config.prizeText}
       </motion.p>
 
       <motion.div
@@ -71,11 +95,11 @@ export function HomeView() {
         transition={{ duration: 0.5, delay: 0.3 }}
         className="mt-10 flex flex-col items-center gap-1 text-muted"
       >
-        <p>Miércoles 6 de mayo · 18:30 hs</p>
-        <p>Pilar Padel Center</p>
+        <p>{formatEventDate(tournament.config.eventStart)}</p>
+        <p>{tournament.config.eventLocation}</p>
       </motion.div>
 
-      {now !== null && !live && !finished && <Countdown now={now} />}
+      {now !== null && !live && !finished && <Countdown eventTs={eventTs} now={now} />}
 
       <motion.div
         initial={{ opacity: 0 }}
@@ -117,10 +141,10 @@ export function HomeView() {
               </p>
               <span className="text-xs text-muted">{tournament.players.length} jugadores</span>
             </div>
-            <ul className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-sm sm:grid-cols-3">
+            <ul className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm sm:grid-cols-3">
               {tournament.players.map((p) => (
-                <li key={p.id} className="flex items-center gap-2 truncate">
-                  <span className="size-1.5 rounded-full shrink-0 bg-cyan-bright/60" />
+                <li key={p.id} className="flex min-w-0 items-center gap-2.5">
+                  <PlayerAvatar player={p} size="sm" />
                   <span className="truncate">{p.name}</span>
                 </li>
               ))}
@@ -132,8 +156,8 @@ export function HomeView() {
   );
 }
 
-function Countdown({ now }: { now: number }) {
-  const { days, hours, minutes, seconds } = diff(now);
+function Countdown({ eventTs, now }: { eventTs: number; now: number }) {
+  const { days, hours, minutes, seconds } = diff(eventTs, now);
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}

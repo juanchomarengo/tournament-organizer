@@ -9,6 +9,7 @@ import { PairsStage } from "./PairsStage";
 import { GroupsStage } from "./GroupsStage";
 import { MatchesStage } from "./MatchesStage";
 import { DataSection } from "./DataSection";
+import { ConfigSection } from "./ConfigSection";
 import type { Tournament, TournamentStateName } from "@/lib/types";
 
 const STATE_LABELS: Record<TournamentStateName, { label: string; color: "muted" | "cyan" | "violet" | "pink" }> = {
@@ -78,9 +79,12 @@ export function AdminDashboard() {
       ) : (
         <div className="flex flex-col gap-6">
           {tournament.state === "setup" && (
+            <ConfigSection tournament={tournament} onChange={update} />
+          )}
+          {tournament.state === "setup" && (
             <PlayersSection tournament={tournament} onChange={update} />
           )}
-          <PairsStage tournament={tournament} refresh={refresh} />
+          <PairsStage tournament={tournament} refresh={refresh} onUpdate={update} />
           {(tournament.state === "pairs_drawn" ||
             tournament.state === "bracket_drawn" ||
             tournament.state === "running" ||

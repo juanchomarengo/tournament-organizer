@@ -74,6 +74,7 @@ export function DataSection({ tournament, refresh }: Props) {
     setMsg(null);
     try {
       await saveTournament({
+        config: tournament.config,
         players: [],
         teams: [],
         groups: [],

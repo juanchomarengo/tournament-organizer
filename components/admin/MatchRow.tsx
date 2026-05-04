@@ -9,6 +9,8 @@ interface Props {
   match: Match;
   teams: Team[];
   players: Player[];
+  /** Mostrar inputs de sets además de games. */
+  showSets: boolean;
   onSave: (
     matchId: string,
     payload: { score: Score | null; winner: string | null; status: Match["status"] },
@@ -19,7 +21,7 @@ function emptyScore(): Score {
   return { setsA: 0, setsB: 0, gamesA: 0, gamesB: 0 };
 }
 
-export function MatchRow({ match, teams, players, onSave }: Props) {
+export function MatchRow({ match, teams, players, showSets, onSave }: Props) {
   const teamA = teams.find((t) => t.id === match.teamA);
   const teamB = teams.find((t) => t.id === match.teamB);
   const ready = !!teamA && !!teamB;
@@ -96,31 +98,49 @@ export function MatchRow({ match, teams, players, onSave }: Props) {
 
       {match.status === "done" && match.score && (
         <div className="mt-2 text-xs text-muted">
-          Sets {match.score.setsA}-{match.score.setsB} · Games {match.score.gamesA}-{match.score.gamesB}
+          {showSets && (
+            <>
+              Sets {match.score.setsA}-{match.score.setsB} ·{" "}
+            </>
+          )}
+          Games {match.score.gamesA}-{match.score.gamesB}
         </div>
       )}
 
       {editing && ready && (() => {
-        const setsLeader =
-          score.setsA > score.setsB ? teamA?.id : score.setsB > score.setsA ? teamB?.id : null;
+        const setsLeader = showSets
+          ? score.setsA > score.setsB
+            ? teamA?.id
+            : score.setsB > score.setsA
+              ? teamB?.id
+              : null
+          : null;
         const gamesLeader =
           score.gamesA > score.gamesB ? teamA?.id : score.gamesB > score.gamesA ? teamB?.id : null;
-        const someScore = score.setsA + score.setsB + score.gamesA + score.gamesB > 0;
+        const someScore =
+          (showSets ? score.setsA + score.setsB : 0) + score.gamesA + score.gamesB > 0;
+        const primaryLeader = showSets ? setsLeader : gamesLeader;
         const winnerMismatch =
-          someScore && winner !== null && setsLeader !== null && winner !== setsLeader;
+          someScore && winner !== null && primaryLeader !== null && winner !== primaryLeader;
         const winnerVsGames =
-          someScore && winner !== null && gamesLeader !== null && winner !== gamesLeader;
+          showSets &&
+          someScore &&
+          winner !== null &&
+          gamesLeader !== null &&
+          winner !== gamesLeader;
         return (
         <div className="mt-4 flex flex-col gap-3 rounded-lg border border-cyan-bright/20 bg-cyan-bright/5 p-3">
-          <div className="grid grid-cols-2 gap-3">
-            <ScoreFields
-              labelA="Sets A"
-              labelB="Sets B"
-              valueA={score.setsA}
-              valueB={score.setsB}
-              onChangeA={(v) => setScore({ ...score, setsA: v })}
-              onChangeB={(v) => setScore({ ...score, setsB: v })}
-            />
+          <div className={`grid gap-3 ${showSets ? "grid-cols-2" : "grid-cols-1"}`}>
+            {showSets && (
+              <ScoreFields
+                labelA="Sets A"
+                labelB="Sets B"
+                valueA={score.setsA}
+                valueB={score.setsB}
+                onChangeA={(v) => setScore({ ...score, setsA: v })}
+                onChangeB={(v) => setScore({ ...score, setsB: v })}
+              />
+            )}
             <ScoreFields
               labelA="Games A"
               labelB="Games B"
@@ -158,7 +178,7 @@ export function MatchRow({ match, teams, players, onSave }: Props) {
           {(winnerMismatch || winnerVsGames) && (
             <div className="rounded-md border border-amber-300/30 bg-amber-300/10 px-3 py-2 text-xs text-amber-200">
               ⚠ El ganador elegido no coincide con quien tiene más{" "}
-              {winnerMismatch ? "sets" : "games"}. ¿Es correcto?
+              {winnerMismatch && showSets ? "sets" : "games"}. ¿Es correcto?
             </div>
           )}
           <div className="flex gap-2">

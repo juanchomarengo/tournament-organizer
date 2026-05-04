@@ -44,11 +44,10 @@ export function BracketView() {
 
       <Section title="Grupos" subtitle="Fase 1 · todos contra todos">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          {tournament.groups.map((g, idx) => (
+          {tournament.groups.map((g) => (
             <GroupCard
               key={g.id}
               group={g}
-              court={idx + 1}
               teams={tournament.teams}
               players={tournament.players}
               matches={tournament.matches}
@@ -57,7 +56,10 @@ export function BracketView() {
         </div>
       </Section>
 
-      <Section title="Final Four" subtitle="Fase 2 · canchas 1 y 2">
+      <Section
+        title={tournament.groups.length === 1 ? "Final" : "Playoffs"}
+        subtitle="Fase 2"
+      >
         <FinalFour
           matches={tournament.matches}
           teams={tournament.teams}
@@ -92,19 +94,19 @@ function Section({
 
 function GroupCard({
   group,
-  court,
   teams,
   players,
   matches,
 }: {
   group: Group;
-  court: number;
   teams: Team[];
   players: Player[];
   matches: Match[];
 }) {
   const groupMatches = matches.filter((m) => m.phase === "groups" && m.groupId === group.id);
-  const allDone = groupMatches.length === 3 && groupMatches.every((m) => m.status === "done");
+  const expectedMatches = (group.teamIds.length * (group.teamIds.length - 1)) / 2;
+  const allDone =
+    groupMatches.length === expectedMatches && groupMatches.every((m) => m.status === "done");
   const ranking = useMemo(() => rankGroup(group, matches), [group, matches]);
   const winnerId = allDone ? ranking[0]?.teamId : null;
 
@@ -113,7 +115,7 @@ function GroupCard({
       <div className="mb-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="text-display text-lg font-semibold">Grupo {group.id}</span>
-          <Badge color="muted">Cancha {court}</Badge>
+          <Badge color="muted">{group.teamIds.length} parejas</Badge>
         </div>
         {allDone && <Badge color="cyan">Cerrado</Badge>}
       </div>
@@ -194,6 +196,21 @@ function FinalFour({
   const final = matches.find((m) => m.phase === "final");
   const third = matches.find((m) => m.phase === "third");
 
+  if (semis.length === 0) {
+    // Solo final (caso 1 grupo)
+    return (
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="flex flex-col gap-3">
+          <p className="text-xs uppercase tracking-[0.2em] text-muted">Final</p>
+          {final && <BracketMatch match={final} teams={teams} players={players} bigWinner />}
+        </div>
+        <div className="flex items-center justify-center">
+          <CupSilhouette />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
       <div className="flex flex-col gap-3">
@@ -205,8 +222,12 @@ function FinalFour({
       <div className="flex flex-col gap-3">
         <p className="text-xs uppercase tracking-[0.2em] text-muted">Final</p>
         {final && <BracketMatch match={final} teams={teams} players={players} bigWinner />}
-        <p className="mt-3 text-xs uppercase tracking-[0.2em] text-muted">3er puesto</p>
-        {third && <BracketMatch match={third} teams={teams} players={players} />}
+        {third && (
+          <>
+            <p className="mt-3 text-xs uppercase tracking-[0.2em] text-muted">3er puesto</p>
+            <BracketMatch match={third} teams={teams} players={players} />
+          </>
+        )}
       </div>
       <div className="flex items-center justify-center">
         <CupSilhouette />

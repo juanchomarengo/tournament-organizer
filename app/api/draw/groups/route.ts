@@ -11,7 +11,7 @@ export async function POST() {
       if (t.state !== "pairs_drawn") {
         throw new Error("Primero hay que sortear las parejas");
       }
-      const { teams, groups, matches } = drawGroupsAndMatches(t.teams);
+      const { teams, groups, matches } = drawGroupsAndMatches(t.teams, t.config);
       return {
         ...t,
         teams,

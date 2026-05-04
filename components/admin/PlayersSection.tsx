@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { Player, Tournament, Level } from "@/lib/types";
 import { Button, Card, Input, Select, Badge } from "@/components/ui";
+import { PlayerAvatar } from "@/components/PlayerAvatar";
 import { seedPlayers } from "@/lib/seed";
 
 interface Props {
@@ -25,7 +26,9 @@ export function PlayersSection({ tournament, onChange }: Props) {
   const total = players.length;
   const isEven = total > 0 && total % 2 === 0;
   const isBalanced = intermedios === principiantes;
-  const canDraw = isEven && isBalanced && total >= 4;
+  const canDraw = isEven && total >= 4;
+  const mixedPairs = Math.min(intermedios, principiantes);
+  const sameLevelPairs = canDraw ? (total - mixedPairs * 2) / 2 : 0;
 
   async function addPlayer() {
     if (!name.trim()) return;
@@ -87,17 +90,21 @@ export function PlayersSection({ tournament, onChange }: Props) {
         <div>
           <h2 className="text-display text-xl font-semibold">Jugadores</h2>
           <p className="text-sm text-muted">
-            Para sortear parejas balanceadas, deben ser número par y misma cantidad de cada nivel.
+            Total par y mínimo 4. El sorteo arma 1 Int + 1 Prin mientras alcance; los sobrantes se emparejan entre sí.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Badge color={total === 0 ? "muted" : isEven ? "cyan" : "pink"}>
             {total} en total {isEven ? "(par)" : "(impar)"}
           </Badge>
-          <Badge color={isBalanced && total > 0 ? "cyan" : "muted"}>
-            Int {intermedios} · Prin {principiantes}
-          </Badge>
-          {canDraw && <Badge color="cyan">Listo para sortear</Badge>}
+          <Badge color="muted">Int {intermedios} · Prin {principiantes}</Badge>
+          {canDraw && (
+            <Badge color="cyan">
+              {isBalanced
+                ? "Listo para sortear"
+                : `${mixedPairs} mixtas + ${sameLevelPairs} mismo nivel`}
+            </Badge>
+          )}
         </div>
       </div>
 
@@ -125,7 +132,7 @@ export function PlayersSection({ tournament, onChange }: Props) {
 
       <div className="mt-3 flex flex-wrap gap-2">
         <Button variant="ghost" onClick={loadSeed} disabled={busy}>
-          Cargar lista inicial (21)
+          Cargar lista inicial (26)
         </Button>
         {players.length > 0 && (
           <Button variant="danger" onClick={clearAll} disabled={busy}>
@@ -142,12 +149,14 @@ export function PlayersSection({ tournament, onChange }: Props) {
               className="flex items-center justify-between gap-3 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-sm"
             >
               <div className="flex items-center gap-3 min-w-0">
+                <PlayerAvatar player={p} size="sm" />
+                <span className="truncate font-medium">{p.name}</span>
                 <span
-                  className={`size-2 rounded-full shrink-0 ${
+                  className={`size-1.5 rounded-full shrink-0 ${
                     p.level === "intermedio" ? "bg-cyan-bright" : "bg-sirius-violet"
                   }`}
+                  title={p.level === "intermedio" ? "Intermedio" : "Principiante"}
                 />
-                <span className="truncate font-medium">{p.name}</span>
               </div>
               <div className="flex items-center gap-1 shrink-0">
                 <button

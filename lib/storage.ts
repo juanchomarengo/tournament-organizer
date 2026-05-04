@@ -1,10 +1,18 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import { Redis } from "@upstash/redis";
-import { EMPTY_TOURNAMENT, type Tournament } from "./types";
+import { DEFAULT_CONFIG, EMPTY_TOURNAMENT, type Tournament } from "./types";
 
 const KV_KEY = "sirius-padel:tournament";
 const LOCAL_FILE = path.join(process.cwd(), ".tournament-state.json");
+
+function withDefaults(t: Tournament | null | undefined): Tournament {
+  if (!t) return EMPTY_TOURNAMENT;
+  return {
+    ...t,
+    config: { ...DEFAULT_CONFIG, ...(t.config ?? {}) },
+  };
+}
 
 let redis: Redis | null = null;
 
@@ -21,11 +29,11 @@ export async function readTournament(): Promise<Tournament> {
   const r = getRedis();
   if (r) {
     const data = await r.get<Tournament>(KV_KEY);
-    return data ?? EMPTY_TOURNAMENT;
+    return withDefaults(data);
   }
   try {
     const raw = await fs.readFile(LOCAL_FILE, "utf-8");
-    return JSON.parse(raw) as Tournament;
+    return withDefaults(JSON.parse(raw) as Tournament);
   } catch (err) {
     if ((err as NodeJS.ErrnoException).code === "ENOENT") {
       return EMPTY_TOURNAMENT;
@@ -41,7 +49,24 @@ export async function writeTournament(t: Tournament): Promise<void> {
     await r.set(KV_KEY, next);
     return;
   }
-  await fs.writeFile(LOCAL_FILE, JSON.stringify(next, null, 2), "utf-8");
+  // Escritura atómica: tmp file + rename, para evitar race con readers concurrentes
+  const tmp = `${LOCAL_FILE}.${process.pid}.${Date.now()}.tmp`;
+  await fs.writeFile(tmp, JSON.stringify(next, null, 2), "utf-8");
+  await fs.rename(tmp, LOCAL_FILE);
+}
+
+export async function readTournamentSafe(): Promise<Tournament> {
+  // Wrapper que tolera un archivo "vacío" durante una transición
+  try {
+    return await readTournament();
+  } catch (err) {
+    if (err instanceof SyntaxError) {
+      // Archivo medio-escrito, esperar y reintentar una vez
+      await new Promise((r) => setTimeout(r, 20));
+      return readTournament();
+    }
+    throw err;
+  }
 }
 
 export async function mutate(

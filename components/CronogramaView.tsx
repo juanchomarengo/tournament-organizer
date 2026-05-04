@@ -3,16 +3,26 @@
 import { useTournament } from "@/lib/client";
 import { Card, Badge } from "@/components/ui";
 import { teamLabel } from "@/lib/draw";
-import type { Match, Team, Player } from "@/lib/types";
+import { calculatePlan, estimateMatchMinutes } from "@/lib/estimator";
+import type { Match, Team, Player, Tournament } from "@/lib/types";
 
-const ROUND_TIMES: Record<number, string> = {
-  1: "18:30",
-  2: "18:45",
-  3: "19:00",
-  4: "19:15",
-  5: "19:30",
-  6: "19:45",
-};
+function roundTime(eventStart: string, roundIdx: number, roundMinutes: number): string {
+  const d = new Date(eventStart);
+  if (Number.isNaN(d.getTime())) return "—";
+  d.setMinutes(d.getMinutes() + (roundIdx - 1) * roundMinutes);
+  return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+}
+
+function deriveRoundMinutes(t: Tournament): number {
+  const teams = t.teams.length;
+  if (t.config.durationMode === "by-set") {
+    return estimateMatchMinutes(t.config.matchFormat);
+  }
+  // by-time: dividir el tiempo reservado por la cantidad de rondas estimadas
+  if (teams < 4) return Math.max(10, Math.floor(t.config.totalReservedMinutes / 6));
+  const plan = calculatePlan(teams, t.config.courts);
+  return Math.max(5, Math.floor(t.config.totalReservedMinutes / plan.totalRounds));
+}
 
 export function CronogramaView() {
   const { tournament, loading } = useTournament(5000);
@@ -53,12 +63,16 @@ export function CronogramaView() {
     return matches.some((m) => m.status !== "done");
   }) ?? null;
 
+  const courts = Math.max(1, Math.min(4, tournament.config.courts));
+  const courtsArray = Array.from({ length: courts }, (_, i) => i + 1);
+  const roundMinutes = deriveRoundMinutes(tournament);
+
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-10">
       <div className="mb-8">
         <p className="text-xs uppercase tracking-[0.25em] text-cyan-bright">Cronograma</p>
         <h1 className="text-display text-3xl sm:text-4xl font-bold">
-          Pilar Padel Center · 4 canchas
+          {tournament.config.eventLocation} · {courts} cancha{courts === 1 ? "" : "s"}
         </h1>
       </div>
 
@@ -67,10 +81,11 @@ export function CronogramaView() {
           <thead>
             <tr className="border-b border-white/10 text-xs uppercase tracking-[0.15em] text-muted">
               <th className="px-4 py-3 w-32">Ronda</th>
-              <th className="px-4 py-3">Cancha 1</th>
-              <th className="px-4 py-3">Cancha 2</th>
-              <th className="px-4 py-3">Cancha 3</th>
-              <th className="px-4 py-3">Cancha 4</th>
+              {courtsArray.map((c) => (
+                <th key={c} className="px-4 py-3">
+                  Cancha {c}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
@@ -94,7 +109,9 @@ export function CronogramaView() {
                       >
                         R{round}
                       </span>
-                      <span className="text-xs text-muted">{ROUND_TIMES[round] ?? "—"}</span>
+                      <span className="text-xs text-muted">
+                        {roundTime(tournament.config.eventStart, round, roundMinutes)}
+                      </span>
                       {isActive && (
                         <span className="mt-1 inline-flex w-fit items-center gap-1 rounded-full bg-cyan-bright/15 px-2 py-0.5 text-[10px] uppercase tracking-[0.15em] text-cyan-bright">
                           <span className="size-1.5 rounded-full bg-cyan-bright animate-pulse" />
@@ -108,7 +125,7 @@ export function CronogramaView() {
                       )}
                     </div>
                   </td>
-                  {[1, 2, 3, 4].map((court) => {
+                  {courtsArray.map((court) => {
                     const m = matches.find((mm) => mm.court === court);
                     return (
                       <td key={court} className="px-3 py-3 align-top">

@@ -89,36 +89,51 @@ Un solo objeto JSON bajo la key `tournament`:
 4. **Run del torneo** — Por cada partido: asignar cancha + horario (auto según cronograma), cargar score (sets/games) y marcar ganador. El admin **cierra el partido cuando quiere**, no hay timer automático.
 5. **Export Excel** — Botón siempre disponible. Descarga `.xlsx` con jugadores, parejas, grupos, partidos, ganadores y campeón. Backup por si algo se rompe en vivo.
 
-## 7. Formato del torneo
+## 7. Formato del torneo (flexible según parejas)
 
-12 parejas (24 jugadores). El admin se encarga de tener un número par antes del sorteo.
+El bracket se adapta automáticamente a la cantidad de parejas y canchas configuradas.
 
-### Fase 1 — Grupos (45 min, rondas 1–3 de 15')
+### Configuración (editable desde `/admin`)
 
-- 4 grupos de 3 parejas (A, B, C, D), una zona por cancha
-- Todos contra todos dentro del grupo: 3 partidos por grupo
-- Cada pareja juega **2 partidos**
-- Clasifica el 1° de cada grupo a Final Four (criterio: partidos ganados, desempate por games ganados)
+| Campo | Default | Notas |
+|-------|---------|-------|
+| `courts` | 4 | Canchas en simultáneo. Tope práctico = 4. |
+| `durationMode` | `by-time` | `by-time` (cada ronda dura X min, cuenta games) o `by-set` (cada partido se juega hasta cerrar el formato). |
+| `totalReservedMinutes` | 90 | Tiempo total reservado para el evento. Drives los cálculos del panel. |
+| `matchFormat` | `best-of-3` | Solo aplica si `durationMode === "by-set"`. `single-set` (~25 min) o `best-of-3` (~60 min). |
+| `preferredGroupCount` | `auto` | Override de la heurística: `"auto"`, `1`, `2`, `4` grupos. Si el override no respeta el mínimo de 2 parejas/grupo, se cae a auto. |
+| `eventStart` | 2026-05-06 18:30 | ISO con timezone. Drives countdown y horarios del cronograma. |
+| `eventLocation` | Pilar Padel Center | |
+| `prizeText` | 2026 World Cup merch | |
 
-### Fase 2 — Final Four (45 min, rondas 4–6 de 15')
+**El panel calcula y avisa:**
+- En `by-time`: dado el tiempo reservado, parejas y canchas, sugiere cuántos minutos por partido (con warning si caen abajo de 8 min).
+- En `by-set`: estima la duración total con `estimateMatchMinutes(format)` y avisa si excede el tiempo reservado.
 
-**Foco actual: solo el camino del campeón.** Qué hacen las 8 parejas perdedoras durante esta fase queda **TBD** y se decide más adelante (ver sección 10).
+### Estructura por cantidad de parejas
 
-| Ronda | Cancha 1 | Cancha 2 | Cancha 3 | Cancha 4 |
-|-------|----------|----------|----------|----------|
-| 4 | Semi 1 (1°A vs 1°D) | Semi 2 (1°B vs 1°C) | _TBD_ | _TBD_ |
-| 5 | **FINAL** | 3er puesto | _TBD_ | _TBD_ |
-| 6 | _libre / overtime_ | _libre / overtime_ | _TBD_ | _TBD_ |
+| Parejas | Grupos | Fase 2 |
+|---------|--------|--------|
+| 4–5 | 1 grupo (round-robin) | Final directa entre 1° y 2° |
+| 6–10 | 2 grupos | Semis cruzadas (1°A vs 2°B / 1°B vs 2°A) + Final + 3° puesto |
+| 11+ | 4 grupos | Semis (1°A vs 1°D / 1°B vs 1°C) + Final + 3° puesto |
 
-- **Cancha 1 y 2:** llave de campeón. Una sola pareja gana el torneo (fiel al flyer).
-- **Cancha 3 y 4:** sin uso definido todavía.
+### Fase 1 — Grupos
 
-### Resultado por pareja (con el alcance actual)
+- Round-robin completo dentro de cada grupo.
+- Schedule **greedy**: cada partido se asigna al primer slot (round, cancha) libre donde la cancha esté disponible y ninguna pareja del partido ya esté jugando en ese round.
+- Limitado a las canchas configuradas: si `courts=2`, el schedule serializa más rondas.
 
-- Ganador de grupo: 2 (grupo) + 2 ó 3 (finales) = **4 partidos**
-- No ganador de grupo: 2 (grupo) + 0 = **2 partidos** ← _se resuelve después_
+### Fase 2 — Playoffs
 
-Una sola pareja se corona campeona del Sirius Padel Tournament 2026.
+- Las semis (o la final si hay 1 solo grupo) se llenan automáticamente cuando se cierran todos los partidos de grupos.
+- Final + 3° puesto se llenan cuando se cierran las semis.
+
+### Tiebreakers en grupos
+
+1. Partidos ganados
+2. Diferencia de games (gamesFor − gamesAgainst)
+3. Games a favor
 
 ## 8. Score y cierre de partidos
 
@@ -128,9 +143,9 @@ Una sola pareja se corona campeona del Sirius Padel Tournament 2026.
 
 ## 9. Sorteo de parejas
 
-- **Regla:** cada pareja = 1 Intermedio + 1 Principiante.
-- Para que funcione, idealmente la lista tiene mismo número de Intermedios y Principiantes.
-- Si la distribución no es exacta, el admin lo resuelve antes (cambiando niveles o ajustando lista).
+- **Regla (best effort):** se emparejan 1 Intermedio + 1 Principiante mientras alcance. Cuando se agota un nivel, los sobrantes del nivel mayoritario se emparejan entre sí.
+- **Requisitos mínimos:** total par y mínimo 4 jugadores. No se exige balance perfecto entre niveles.
+- El admin ve un preview antes de sortear: "X parejas mixtas + Y mismo nivel".
 - **Animación show:** doble reveal — primero "tu compañero es X", después "tu rival en grupo es Y".
 
 ## 10. Funcionalidades descartadas o pospuestas

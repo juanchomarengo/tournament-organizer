@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTournament } from "@/lib/client";
 import { Button, Card } from "@/components/ui";
+import { PlayerAvatar } from "@/components/PlayerAvatar";
 import type { Player, Team } from "@/lib/types";
 
 const REVEAL_DELAY_MS = 2200;
@@ -267,12 +268,12 @@ function RevealCard({
               transition={{ duration: 0.4, ease: "easeOut" }}
               className="mt-3 flex flex-col gap-1.5"
             >
-              <div className="flex items-center gap-2 text-lg font-semibold">
-                <span className="size-2 rounded-full bg-cyan-bright/80" />
+              <div className="flex items-center gap-3 text-lg font-semibold">
+                <PlayerAvatar player={a} size="md" />
                 <span className="truncate">{a?.name ?? "?"}</span>
               </div>
-              <div className="flex items-center gap-2 text-lg font-semibold">
-                <span className="size-2 rounded-full bg-cyan-bright/80" />
+              <div className="flex items-center gap-3 text-lg font-semibold">
+                <PlayerAvatar player={b} size="md" />
                 <span className="truncate">{b?.name ?? "?"}</span>
               </div>
               {groupId && (

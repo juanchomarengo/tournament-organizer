@@ -5,21 +5,27 @@ import Link from "next/link";
 import { postAction, deleteAction } from "@/lib/client";
 import { Button, Card, Badge } from "@/components/ui";
 import { teamLabel } from "@/lib/draw";
-import type { Tournament } from "@/lib/types";
+import { EditTeamModal } from "./EditTeamModal";
+import type { Team, Tournament } from "@/lib/types";
 
 interface Props {
   tournament: Tournament;
   refresh: () => Promise<void>;
+  onUpdate: (next: Tournament) => Promise<void>;
 }
 
-export function PairsStage({ tournament, refresh }: Props) {
+export function PairsStage({ tournament, refresh, onUpdate }: Props) {
+  const [editingTeam, setEditingTeam] = useState<Team | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const players = tournament.players;
   const intermedios = players.filter((p) => p.level === "intermedio").length;
   const principiantes = players.filter((p) => p.level === "principiante").length;
-  const isReady = intermedios === principiantes && intermedios > 0;
+  const isReady = players.length >= 4 && players.length % 2 === 0;
+  const isBalanced = intermedios === principiantes;
+  const mixedPairs = Math.min(intermedios, principiantes);
+  const sameLevelPairs = isReady ? (players.length - mixedPairs * 2) / 2 : 0;
 
   async function drawPairsAction() {
     setBusy(true);
@@ -53,7 +59,7 @@ export function PairsStage({ tournament, refresh }: Props) {
       <Card>
         <h2 className="text-display text-xl font-semibold">Sorteo de parejas</h2>
         <p className="mt-1 text-sm text-muted">
-          Cada pareja se forma con 1 Intermedio + 1 Principiante.
+          Empareja 1 Intermedio + 1 Principiante mientras se pueda. Los sobrantes del nivel mayoritario juegan entre sí.
         </p>
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <Button onClick={drawPairsAction} disabled={busy || !isReady}>
@@ -74,11 +80,16 @@ export function PairsStage({ tournament, refresh }: Props) {
             Vista previa
           </Link>
         </div>
-        {!isReady && (
+        {!isReady ? (
           <p className="mt-3 text-xs text-muted">
-            Asegurate de tener misma cantidad de Intermedios y Principiantes y un mínimo de 4 jugadores.
+            Necesitás un número par de jugadores y mínimo 4.
           </p>
-        )}
+        ) : !isBalanced ? (
+          <p className="mt-3 text-xs text-muted">
+            Van a salir <span className="text-foreground">{mixedPairs}</span> parejas mixtas y{" "}
+            <span className="text-foreground">{sameLevelPairs}</span> parejas del mismo nivel.
+          </p>
+        ) : null}
         {error && <p className="mt-3 text-sm text-rose-300">{error}</p>}
       </Card>
     );
@@ -123,12 +134,31 @@ export function PairsStage({ tournament, refresh }: Props) {
             className="flex items-center gap-3 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-sm"
           >
             <Badge color="muted">P{i + 1}</Badge>
-            <span className="truncate font-medium">{teamLabel(t, players)}</span>
+            <span className="truncate font-medium flex-1">{teamLabel(t, players)}</span>
             {t.groupId && <Badge color="violet">{t.groupId}</Badge>}
+            <button
+              type="button"
+              onClick={() => setEditingTeam(t)}
+              className="rounded-md px-2 py-0.5 text-xs text-cyan-bright hover:bg-cyan-bright/10"
+              aria-label={`Editar pareja P${i + 1}`}
+            >
+              Editar
+            </button>
           </li>
         ))}
       </ul>
       {error && <p className="mt-3 text-sm text-rose-300">{error}</p>}
+
+      {editingTeam && (
+        <EditTeamModal
+          tournament={tournament}
+          team={editingTeam}
+          onClose={() => setEditingTeam(null)}
+          onSave={async (next) => {
+            await onUpdate(next);
+          }}
+        />
+      )}
     </Card>
   );
 }

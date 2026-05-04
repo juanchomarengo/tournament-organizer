@@ -90,6 +90,10 @@ export function MatchesStage({ tournament, refresh }: Props) {
                     match={m}
                     teams={tournament.teams}
                     players={tournament.players}
+                    showSets={
+                      tournament.config.durationMode === "by-set" &&
+                      tournament.config.matchFormat === "best-of-3"
+                    }
                     onSave={saveMatch}
                   />
                 ))}

@@ -17,12 +17,20 @@ export function GroupsStage({ tournament, refresh }: Props) {
   const [error, setError] = useState<string | null>(null);
 
   if (tournament.state === "pairs_drawn") {
-    const ready = tournament.teams.length === 12;
+    const teamsCount = tournament.teams.length;
+    const ready = teamsCount >= 4;
+    let groupCount: 1 | 2 | 4 = 4;
+    if (teamsCount <= 5) groupCount = 1;
+    else if (teamsCount <= 10) groupCount = 2;
+    let format = "1 grupo (todos contra todos) + final";
+    if (groupCount === 2) format = "2 grupos + semis cruzadas + final";
+    if (groupCount === 4) format = "4 grupos + semis + final";
     return (
       <Card>
         <h2 className="text-display text-xl font-semibold">Sorteo de grupos</h2>
         <p className="mt-1 text-sm text-muted">
-          Las 12 parejas se distribuyen en 4 grupos (A, B, C, D).
+          {teamsCount} parejas → <span className="text-foreground">{format}</span>. Los partidos se
+          schedulean en {tournament.config.courts} cancha{tournament.config.courts === 1 ? "" : "s"}.
         </p>
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <Button
@@ -45,7 +53,7 @@ export function GroupsStage({ tournament, refresh }: Props) {
         </div>
         {!ready && (
           <p className="mt-3 text-xs text-muted">
-            Necesitamos 12 parejas exactas para armar los 4 grupos. Hay {tournament.teams.length}.
+            Necesitás al menos 4 parejas. Hay {teamsCount}.
           </p>
         )}
         {error && <p className="mt-3 text-sm text-rose-300">{error}</p>}
@@ -102,14 +110,14 @@ export function GroupsStage({ tournament, refresh }: Props) {
       </div>
 
       <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
-        {tournament.groups.map((g, idx) => (
+        {tournament.groups.map((g) => (
           <div
             key={g.id}
             className="rounded-xl border border-white/10 bg-white/[0.03] p-4"
           >
             <div className="mb-2 flex items-center justify-between">
               <span className="text-display text-lg font-semibold">Grupo {g.id}</span>
-              <Badge color="cyan">Cancha {idx + 1}</Badge>
+              <Badge color="muted">{g.teamIds.length} parejas</Badge>
             </div>
             <ul className="flex flex-col gap-1.5 text-sm">
               {g.teamIds.map((teamId) => {
