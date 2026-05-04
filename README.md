@@ -1,36 +1,90 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sirius Padel — Tournament Organizer
+
+App Next.js 16 para organizar torneos de pádel internos: inscripción, sorteo de parejas, grupos, cronograma y bracket.
+
+## Stack
+
+- **Next.js 16** (App Router) + React 19 + Tailwind 4
+- **Storage**: Upstash Redis en producción, archivo local (`.tournament-state.json`) en dev
+- **Auth admin**: password único + cookie con SHA-256 del password (httpOnly, secure en prod)
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abrí [http://localhost:3000](http://localhost:3000). En dev no necesitás env vars: el estado persiste en `.tournament-state.json` y `/admin` usa el password default `padel2026`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Variables de entorno
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Copiar `.env.example` a `.env.local` y completar las que necesites:
 
-## Learn More
+| Variable | Cuándo es requerida | Notas |
+|---|---|---|
+| `ADMIN_PASSWORD` | **Producción** (la app crashea sin ella) | En dev cae a `padel2026` si no está |
+| `KV_REST_API_URL` | **Producción** (filesystem read-only en Vercel) | La integración Upstash de Vercel la setea sola |
+| `KV_REST_API_TOKEN` | **Producción** | Idem |
 
-To learn more about Next.js, take a look at the following resources:
+Alias aceptados: `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` (si usás Upstash sin la integración Vercel).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deploy a Vercel
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Paso 1 — Importar el repo
 
-## Deploy on Vercel
+1. [vercel.com/new](https://vercel.com/new) → Import Git Repository → seleccionar `tournament-organizer`.
+2. **Antes de deployar**, en "Environment Variables" agregar:
+   - `ADMIN_PASSWORD` = un password fuerte (no `padel2026`)
+3. Deploy.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Paso 2 — Storage (Upstash Redis)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. En el proyecto Vercel: **Storage → Create Database → Upstash for Redis → Free tier**.
+2. Vercel inyecta automáticamente `KV_REST_API_URL` y `KV_REST_API_TOKEN` en todos los environments.
+3. Redeploy desde Deployments → último → ⋯ → Redeploy.
+
+Sin Upstash, la app intenta escribir al filesystem y falla en Vercel (read-only).
+
+### Auth en producción
+
+- `lib/auth.ts:getAdminPassword()` tira `Error` si `NODE_ENV === "production"` y `ADMIN_PASSWORD` no está seteada. Eso evita un deploy accidental con el password default.
+- La cookie de sesión guarda `SHA-256(ADMIN_PASSWORD)`, no el password en plano. Si rotás el password, las sesiones existentes se invalidan.
+- `secure: true` en la cookie en producción (HTTPS-only).
+
+## Repos remotos
+
+Este repo vive en dos lados:
+
+- `origin` → [`sirius-valley/tournament-organizer`](https://github.com/sirius-valley/tournament-organizer) (canónico, equipo)
+- `personal` → [`juanchomarengo/tournament-organizer`](https://github.com/juanchomarengo/tournament-organizer) (mirror personal)
+
+Los pushes hay que hacerlos a cada uno explícito (`git push origin main`, `git push personal main`). Vercel deploya desde uno solo de los dos — el que se haya importado en el dashboard.
+
+## Tests
+
+```bash
+npm run test:e2e        # Playwright headless
+npm run test:e2e:ui     # Playwright con UI
+```
+
+## Estructura
+
+```
+app/
+  admin/         # Panel admin (protegido por password)
+  api/           # Routes: /auth, /draw, /match, /state
+  bracket/       # Bracket público
+  cronograma/    # Cronograma público
+  sorteo/        # Animación de sorteo público
+components/      # UI compartida
+lib/
+  auth.ts        # Auth admin (password + cookie SHA-256)
+  storage.ts     # Persistencia (Upstash o filesystem)
+  draw.ts        # Algoritmo de sorteo
+  estimator.ts   # Cálculo de duración del torneo
+  seed.ts        # Lista inicial de jugadores
+  types.ts       # Tipos del dominio
+```
+
+Decisiones de diseño documentadas en [`DECISIONS.md`](./DECISIONS.md).
