@@ -11,7 +11,7 @@ const SEED_NAMES: Array<{ name: string; level: Level }> = [
   { name: 'Agustina Alma', level: 'principiante' },
   { name: 'Santino Montevidoni', level: 'intermedio' },
   { name: 'Ignacio Narbais', level: 'principiante' },
-  { name: 'Santi Pérez', level: 'intermedio' },
+  { name: 'Santi Péres', level: 'intermedio' },
   { name: 'Don Pablo', level: 'intermedio' },
   { name: 'Cami Contestabile', level: 'principiante' },
   { name: 'Nacho Núñez', level: 'intermedio' },
